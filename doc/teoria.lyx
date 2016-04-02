@@ -1,0 +1,748 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
+\begin_document
+\begin_header
+\textclass book
+\use_default_options true
+\maintain_unincluded_children false
+\language polish
+\language_package babel
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_math auto
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language polish
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Programowo-Sprzętowa Realizacja Algorytmów: wyznaczanie i śledzenie punktów
+ charakterystycznych
+\end_layout
+
+\begin_layout Author
+Wojciech Gumuła, Rafał Prusak
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Chapter
+Metody wykrywania punktów charakterystycznych.
+\end_layout
+
+\begin_layout Standard
+Ważnym zagadnieniem w systemach wizyjnych jest pozyskiwanie informacji z
+ obrazu, a następnie podejmowanie dalszych działań na podstawie pozyskanych
+ danych.
+ 
+\end_layout
+
+\begin_layout Standard
+Wyznaczanie punktów charakterysytcznych ma na celu wybór 
+\begin_inset Quotes pld
+\end_inset
+
+interesujących
+\begin_inset Quotes prd
+\end_inset
+
+ elemntów bądź rejonów obrazu oraz uzysanie charakterystyki specyficznej
+ dla danej aplikacji.
+ Jest to często niskopoziomowa składowa bardziej złożonych algorytmów.
+ Uzyskanie punktów charakterystycznych pozwala na rozpoznawanie kształtów,
+ wyszukiwanie elementów pasujących do wzroca czy też śledzenie obiektów
+ w obrazie wideo.
+\end_layout
+
+\begin_layout Standard
+Istnieje kilka rodzajów punktów unawanych jako charakterystycznych:
+\end_layout
+
+\begin_layout Itemize
+krawędzie,
+\end_layout
+
+\begin_layout Itemize
+narożniki,
+\end_layout
+
+\begin_layout Itemize
+krople(blobs ?).
+\end_layout
+
+\begin_layout Standard
+Szczególnym 
+\begin_inset Quotes pld
+\end_inset
+
+powodzeniem
+\begin_inset Quotes prd
+\end_inset
+
+ ciszą się narożniki.
+ Punkt te powstają w miejscu krzyżowania się lub gwałtownej zmiany kształtu
+ krawędzi.
+ Z tego powodu, w punkcie narożnym dochodzi do nagłej zmiany wartości gradientu
+ obrazu, co znacząco ułatwia poszukiwanie tego punktu.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Metoda Harrisa
+\end_layout
+
+\begin_layout Standard
+Algorytm Harrisa polega na analizie jasności obrazu i wyszukiwaniu zmian
+ gradientu.
+\end_layout
+
+\begin_layout Standard
+Poszukiwane są odchylenia jasności:
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $E(u,v)=\underset{x,y}{\sum}w(x,y)[I(x+u,y+v)-I(x,y)]^{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+gdzie:
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $w(x,y)$
+\end_inset
+
+ - okno w punkcie 
+\begin_inset Formula $(x,y)$
+\end_inset
+
+ o wymiarach 
+\begin_inset Formula $u\times v$
+\end_inset
+
+,
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $I(x,y)$
+\end_inset
+
+ - jasność w punkcie
+\begin_inset Formula $(x,y)$
+\end_inset
+
+,
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $I(x+u,y+v)$
+\end_inset
+
+ - jasność w drugim punkcie okna.
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Poszukujemy znaczącego odchylenia, więc celem jest maksymalizacja:
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\underset{x,y}{\sum}[I(x+u,y+v)-I(x,y)]^{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Po rozwinięciu w szereg Taylora:
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $E(u,v)\approx\underset{x,y}{\sum}[I(x,y)+uI_{x}+vI_{y}-I(x,y)]^{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Dokonujemy skrócenia:
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $E(u,v)\approx\underset{x,y}{\sum}u^{2}I_{x}^{2}+2uvI_{x}I_{y}+v^{2}I_{y}^{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Równanie można zapisać w postaci macieżowej:
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $E(u,v)\approx[u\,v]M[\begin{array}{c}
+u\\
+v
+\end{array}]$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+z macierzą w postaci:
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $M=\begin{array}{cc}
+I_{x}^{2} & I_{x}I_{y}\\
+I_{x}I_{y} & I_{y}^{2}
+\end{array}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Dla każdego okna wyliczana jest wartość wyrażenia:
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $R=det(M)-k(trace(M))^{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+gdzie:
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $det(M)=\lambda_{1}\lambda_{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $trace(M)=\lambda_{1}+\lambda_{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Wartość wyrażenia 
+\begin_inset Formula $R$
+\end_inset
+
+ powyżej pewnej wartości granicznej oznacza występowanie narożnika.
+\end_layout
+
+\begin_layout Subsection
+Implementacja w OpenCV
+\end_layout
+
+\begin_layout Standard
+Poniższy kod prezentuje wykrywanie narożników za pomocą biblioteki OpenCV:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language={C++},numbers=left,numberstyle={\footnotesize},basicstyle={\footnotesize},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+#include "opencv2/highgui.hpp" 
+\end_layout
+
+\begin_layout Plain Layout
+
+#include "opencv2/imgproc.hpp" 
+\end_layout
+
+\begin_layout Plain Layout
+
+#include <iostream> 
+\end_layout
+
+\begin_layout Plain Layout
+
+#include <stdio.h> 
+\end_layout
+
+\begin_layout Plain Layout
+
+#include <stdlib.h>
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+using namespace cv; 
+\end_layout
+
+\begin_layout Plain Layout
+
+using namespace std;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+Mat src, src_gray; 
+\end_layout
+
+\begin_layout Plain Layout
+
+int thresh = 200; 
+\end_layout
+
+\begin_layout Plain Layout
+
+int max_thresh = 255;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+char* source_window = "Source image"; 
+\end_layout
+
+\begin_layout Plain Layout
+
+char* corners_window = "Corners detected";
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+void cornerHarris_demo( int, void* ) {     
+\end_layout
+
+\begin_layout Plain Layout
+
+	Mat dst, dst_norm, dst_norm_scaled;     
+\end_layout
+
+\begin_layout Plain Layout
+
+	dst = Mat::zeros(src.size(), CV_32FC1);
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	int blockSize = 2;     
+\end_layout
+
+\begin_layout Plain Layout
+
+	int apertureSize = 3;     
+\end_layout
+
+\begin_layout Plain Layout
+
+	double k = 0.04;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	cornerHarris(src_gray, dst, blockSize, apertureSize, k, BORDER_DEFAULT);
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	normalize(dst, dst_norm, 0, 255, NORM_MINMAX, CV_32FC1, Mat());     
+\end_layout
+
+\begin_layout Plain Layout
+
+	convertScaleAbs( dst_norm, dst_norm_scaled );
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	for (int j=0; j<dst_norm.rows ; j++) {         
+\end_layout
+
+\begin_layout Plain Layout
+
+		for (int i=0; i<dst_norm.cols; i++) {             
+\end_layout
+
+\begin_layout Plain Layout
+
+			if((int)dst_norm.at<float>(j,i) > thresh)                 
+\end_layout
+
+\begin_layout Plain Layout
+
+				circle(dst_norm_scaled, Point(i, j), 5, Scalar(0), 2, 8, 0);       
+  
+\end_layout
+
+\begin_layout Plain Layout
+
+		}     
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	namedWindow(corners_window, WINDOW_AUTOSIZE);     
+\end_layout
+
+\begin_layout Plain Layout
+
+	imshow(corners_window, dst_norm_scaled); 
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+int main( int argc, char** argv ) {
+\end_layout
+
+\begin_layout Plain Layout
+
+	src = imread(argv[1], 1);     
+\end_layout
+
+\begin_layout Plain Layout
+
+	cvtColor(src, src_gray, COLOR_BGR2GRAY);
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	namedWindow(source_window, WINDOW_AUTOSIZE);     
+\end_layout
+
+\begin_layout Plain Layout
+
+	createTrackbar("Threshold: ", source_window, &thresh, max_thresh, cornerHarris_
+demo);     
+\end_layout
+
+\begin_layout Plain Layout
+
+	imshow(source_window, src);
+\end_layout
+
+\begin_layout Plain Layout
+
+    cornerHarris_demo(0, 0);
+\end_layout
+
+\begin_layout Plain Layout
+
+    waitKey(0);     
+\end_layout
+
+\begin_layout Plain Layout
+
+	return(0); 
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/harris-lena.png
+	scale 40
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Wykrywanie narożników metodą Harisa w OpenCV
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Metoda Susan
+\end_layout
+
+\begin_layout Chapter
+Analiza istniejącego rozwiązania w
+\end_layout
+
+\begin_layout Chapter
+s.
+ śledzenia punktów.
+\end_layout
+
+\begin_layout Chapter
+Opis całości systemu (detekcja + śledzenie z ramki na ramkę).
+\end_layout
+
+\begin_layout Chapter
+Implementacja C++.
+ 
+\end_layout
+
+\begin_layout Chapter
+Podział HW/SW.
+\end_layout
+
+\begin_layout Chapter
+Uruchomienie na Zybo.
+\end_layout
+
+\end_body
+\end_document
