@@ -930,6 +930,286 @@ Wybór otoczenia piksela w metodzie FAST.
 
 \end_layout
 
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Implementacja w OpenCV.
+\end_layout
+
+\begin_layout Standard
+Poniższy kod prezentuje wykrywanie narożników metodą Fast za pomocą biblioteki
+ OpenCV:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language={C++},numbers=left,numberstyle={\footnotesize},basicstyle={\footnotesize},tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+#include <opencv2/highgui.hpp> 
+\end_layout
+
+\begin_layout Plain Layout
+
+#include <opencv2/imgproc.hpp> 
+\end_layout
+
+\begin_layout Plain Layout
+
+#include <opencv2/features2d.hpp> 
+\end_layout
+
+\begin_layout Plain Layout
+
+#include <vector> 
+\end_layout
+
+\begin_layout Plain Layout
+
+#include <iostream>
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+using namespace cv; 
+\end_layout
+
+\begin_layout Plain Layout
+
+using namespace std;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+Mat src, src_gray; 
+\end_layout
+
+\begin_layout Plain Layout
+
+int thresh = 20; 
+\end_layout
+
+\begin_layout Plain Layout
+
+int max_thresh = 50;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+char* source_window = "Source image"; 
+\end_layout
+
+\begin_layout Plain Layout
+
+char* corners_window = "Corners detected";
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+void Fast_demo(int, void *) {
+\end_layout
+
+\begin_layout Plain Layout
+
+    std::vector<KeyPoint> points;     
+\end_layout
+
+\begin_layout Plain Layout
+
+	FAST(src_gray, points, thresh);
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    auto temp = src_gray.clone();
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    for(auto keyPoint: points) {         
+\end_layout
+
+\begin_layout Plain Layout
+
+		int x = keyPoint.pt.x;         
+\end_layout
+
+\begin_layout Plain Layout
+
+		int y = keyPoint.pt.y;         
+\end_layout
+
+\begin_layout Plain Layout
+
+		Point p{x, y};         
+\end_layout
+
+\begin_layout Plain Layout
+
+		circle(temp, p, 5, Scalar(0));     
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    namedWindow(corners_window, WINDOW_AUTOSIZE);     
+\end_layout
+
+\begin_layout Plain Layout
+
+	imshow(corners_window, temp); 
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+int main(int argc, char** argv) {
+\end_layout
+
+\begin_layout Plain Layout
+
+    src = imread(argv[1], 1);     
+\end_layout
+
+\begin_layout Plain Layout
+
+	cvtColor(src, src_gray, COLOR_BGR2GRAY);
+\end_layout
+
+\begin_layout Plain Layout
+
+	namedWindow(source_window, WINDOW_AUTOSIZE);     
+\end_layout
+
+\begin_layout Plain Layout
+
+	createTrackbar("Threshold: ", source_window, &thresh, max_thresh, Fast_demo);
+     
+\end_layout
+
+\begin_layout Plain Layout
+
+	imshow(source_window, src);
+\end_layout
+
+\begin_layout Plain Layout
+
+    Fast_demo(0, 0);
+\end_layout
+
+\begin_layout Plain Layout
+
+    waitKey(0);     
+\end_layout
+
+\begin_layout Plain Layout
+
+	return(0); 
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/fast.png
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Wykrywanie punktów charakterystycznych metodą Fast(t=50).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Chapter
 Analiza istniejącego rozwiązania w
 \end_layout
