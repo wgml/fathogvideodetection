@@ -718,6 +718,218 @@ Wykrywanie narożników metodą Harisa w OpenCV
 Metoda Susan
 \end_layout
 
+\begin_layout Standard
+Algorytm SUSAN (ang.
+ Smallest Univalue Segment Assimilating Nucleus) polega na znajdowaniu pikseli,
+ które w otoczeniu majmałą̨ liczbę punktów o zbliżonej jasności.
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $c(r,r_{0})=\begin{cases}
+1 & gdy\,|I(r)-I(r_{0})|\leq t\\
+0 & gdy\,|I(r)-I(r_{0})|>t
+\end{cases}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+gdzie:
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $I$
+\end_inset
+
+ - jasność obrazu,
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $r_{0}$
+\end_inset
+
+ - piksel centralny,
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $t$
+\end_inset
+
+ - próg podobieństwa pikseli
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Liczbę pikseli podobnych wyznaczamy następująco:
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $D(r_{0})=\underset{r\epsilon N(r_{0})}{\sum}c(r,r_{0})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+gdzie 
+\begin_inset Formula $N(r_{0})$
+\end_inset
+
+ to otoczenie piksela centralnego.
+\end_layout
+
+\begin_layout Standard
+Aby punkt był uznany za narożnik, co najwyżej połowa punktów jego otoczeniu
+ może być do niego podobna.
+\end_layout
+
+\begin_layout Section
+Metoda Fast
+\end_layout
+
+\begin_layout Standard
+Algorytm Fast (ang.
+ Features from Accelerated Segment Test) opiera się, podobnie jak Susan,
+ na przeszukaniu otoczenia piksela.
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Opis algorytmu:
+\end_layout
+
+\begin_layout Enumerate
+Wybieramy piksel 
+\begin_inset Formula $p$
+\end_inset
+
+ o poziomie jasności 
+\begin_inset Formula $I_{p}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Wybieramy wartośc progu 
+\begin_inset Formula $t$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Wybieramy okrąg o promieniu 
+\begin_inset Formula $r=16$
+\end_inset
+
+ pikseli.
+\end_layout
+
+\begin_layout Enumerate
+Piksel 
+\begin_inset Formula $p$
+\end_inset
+
+ jest narożnikiem jeżeli na okręgu znajduje się ciąg
+\begin_inset Formula $n$
+\end_inset
+
+ pikseli jaśniejszych niż 
+\begin_inset Formula $I_{p}+t$
+\end_inset
+
+ lub ciemniejszych niż 
+\begin_inset Formula $I_{p}-t$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Algorytm ten został udoskonalony przez dodanie testu, który pozwala bardzo
+ szybko odrzucić dużą liczbę punktów nie będących narożnikami.
+ W tym teście sprawdzana jest jasność po kolei pikseli 1, 9, 5, 13.
+\end_layout
+
+\begin_layout Standard
+Dobór okręgu został przedstawiony na rysunku 1.2.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/fast.jpg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Wybór otoczenia piksela w metodzie FAST.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Chapter
 Analiza istniejącego rozwiązania w
 \end_layout
