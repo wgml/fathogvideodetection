@@ -899,6 +899,7 @@ Dobór okręgu został przedstawiony na rysunku 1.2.
 
 \begin_layout Standard
 \begin_inset Float figure
+placement h
 wide false
 sideways false
 status open
@@ -1211,12 +1212,149 @@ Wykrywanie punktów charakterystycznych metodą Fast(t=50).
 \end_layout
 
 \begin_layout Chapter
-Analiza istniejącego rozwiązania w
+Analiza istniejących rozwiązań
+\end_layout
+
+\begin_layout Section
+Dopasowywanie punktów w obrazie przestrzennym oparte na wykrywaniu narożników.
+\end_layout
+
+\begin_layout Standard
+Na podstawie artykułu: 
+\begin_inset Quotes pld
+\end_inset
+
+A New Stereo Matching Method Based on Sub-pixel Corner Detection
+\begin_inset Quotes prd
+\end_inset
+
+(Dou Zhao, Ding Liu, Yanxi Yang).
+\end_layout
+
+\begin_layout Standard
+Znajdowanie i dopasowywanie punktów charakterystycznych odgrywa ważną rolę
+ w przetwarzaniu obrazu 3D, wykrywaniu i śledzeniu obiektów.
+ W tych zagadnieniach warunkiem koniecznym jest wysoka wydajność systemu
+ oraz dokładność detekcji.
+ 
+\end_layout
+
+\begin_layout Standard
+W zagadnieniach praktycznych wyróżnia się 3 podejścia: dopasowywanie obszarów(an
+g.
+ 
+\begin_inset Quotes pld
+\end_inset
+
+Area-based
+\begin_inset Quotes prd
+\end_inset
+
+), dopasowywanie punktów charakterystycznych oraz dopasowywanie fazowe(ang.
+ 
+\begin_inset Quotes pld
+\end_inset
+
+Phase-based
+\begin_inset Quotes prd
+\end_inset
+
+).
+ Pierwsza metoda zapewnia wysoką precyzję, ale posiada znaczące wady w postaci
+ trudności wyliczania rozmiaru okna oraz znacznego nakładu obliczeń.
+ Kolejna metoda wyróżnia się odpornością na na zakłócenia i wysoką wydajnością.
+ Niestety, cechuje się ona również zmniejszoną precyzją.
+ Ostatnia metoda jest w stanie usuwać szumy wysokiej częstotliwości oraz
+ jest łatwa do implementacji za pomocą obliczeń równoległych.
+\end_layout
+
+\begin_layout Standard
+W celu poprawy dopasowywania metody punktów charakterystycznych, została
+ opracowana podwójna metoda Harisa z dopasowywaniem punktów opartym na poziomie
+ jasności.
+ Algorytm ten składa się z następujących kroków:
+\end_layout
+
+\begin_layout Enumerate
+Konwersja obrazu na skalę szarości i filtracja.
+\end_layout
+
+\begin_layout Enumerate
+Wykrycie narożników standardową metodą Harisa.
+\end_layout
+
+\begin_layout Enumerate
+Obraz jest dzielony na mniejsze bloki rozmiaru 
+\begin_inset Formula $n\times n$
+\end_inset
+
+ zawierające wykryte krawędzie.
+\end_layout
+
+\begin_layout Enumerate
+Dokonywana jest interpolacja jasności każdego z regionów.
+\end_layout
+
+\begin_layout Standard
+Dopasowywanie punktów odbywa się za pomocą wyliczania charakterystyki 
+\begin_inset Formula $R$
+\end_inset
+
+ każdego punktu i analizie stosunku wartości charakterystyk.
+ Stosunek zbliżony do 1 oznacza dokładne dopasowanie.
+\end_layout
+
+\begin_layout Standard
+Poniższy obraz prezentuje rezultat algorytmu:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/double-hariss.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Dopasowanie punktów charakterystycznych.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+W zaprezentowanym przykładzie błąd wyniósł około 38%.
 \end_layout
 
 \begin_layout Chapter
 s.
  śledzenia punktów.
+ 
 \end_layout
 
 \begin_layout Chapter
