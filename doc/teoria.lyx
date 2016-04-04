@@ -70,7 +70,7 @@
 \begin_body
 
 \begin_layout Title
-Programowo-Sprzętowa Realizacja Algorytmów: wyznaczanie i śledzenie punktów
+Programowo-Sprzętowa Realizacja Algorytmów: Wyznaczanie i śledzenie punktów
  charakterystycznych
 \end_layout
 
@@ -93,13 +93,11 @@ Metody wykrywania punktów charakterystycznych.
 
 \begin_layout Standard
 Ważnym zagadnieniem w systemach wizyjnych jest pozyskiwanie informacji z
- obrazu, a następnie podejmowanie dalszych działań na podstawie pozyskanych
- danych.
- 
+ obrazu, które mogą być wykorzystane w celu inicjacji dalszych działań aplikacji.
 \end_layout
 
 \begin_layout Standard
-Wyznaczanie punktów charakterysytcznych ma na celu wybór 
+Wyznaczanie punktów charakterystycznych ma na celu wybór 
 \begin_inset Quotes pld
 \end_inset
 
@@ -107,16 +105,16 @@ interesujących
 \begin_inset Quotes prd
 \end_inset
 
- elemntów bądź rejonów obrazu oraz uzysanie charakterystyki specyficznej
+ elementów bądź rejonów obrazu oraz uzyskanie charakterystyki specyficznej
  dla danej aplikacji.
- Jest to często niskopoziomowa składowa bardziej złożonych algorytmów.
- Uzyskanie punktów charakterystycznych pozwala na rozpoznawanie kształtów,
- wyszukiwanie elementów pasujących do wzroca czy też śledzenie obiektów
- w obrazie wideo.
+ Jest to często niskopoziomowy element bardziej złożonych algorytmów.
+ Uzyskanie informacji na temat punktów charakterystycznych pozwala na rozpoznawa
+nie kształtów, wyszukiwanie elementów pasujących do wzorca czy też śledzenie
+ obiektów w obrazie wideo.
 \end_layout
 
 \begin_layout Standard
-Istnieje kilka rodzajów punktów unawanych jako charakterystycznych:
+Istnieje kilka rodzajów punktów uznawanych jako charakterystycznych:
 \end_layout
 
 \begin_layout Itemize
@@ -128,23 +126,15 @@ narożniki,
 \end_layout
 
 \begin_layout Itemize
-krople(blobs ?).
+plamy.
 \end_layout
 
 \begin_layout Standard
-Szczególnym 
-\begin_inset Quotes pld
-\end_inset
-
-powodzeniem
-\begin_inset Quotes prd
-\end_inset
-
- ciszą się narożniki.
- Punkt te powstają w miejscu krzyżowania się lub gwałtownej zmiany kształtu
+Szczególną uwagę poświęcono zagadnieniu wykrywania narożników.
+ Punkty te powstają w miejscu krzyżowania się lub gwałtownej zmiany kształtu
  krawędzi.
  Z tego powodu, w punkcie narożnym dochodzi do nagłej zmiany wartości gradientu
- obrazu, co znacząco ułatwia poszukiwanie tego punktu.
+ obrazu, co znacząco ułatwia jego poszukiwanie.
 \end_layout
 
 \begin_layout Standard
@@ -301,7 +291,7 @@ Dokonujemy skrócenia:
 \end_layout
 
 \begin_layout Standard
-Równanie można zapisać w postaci macieżowej:
+Równanie można zapisać w postaci macierzowej:
 \end_layout
 
 \begin_layout Standard
@@ -329,7 +319,7 @@ v
 \end_layout
 
 \begin_layout Standard
-z macierzą w postaci:
+z macierzą postaci:
 \end_layout
 
 \begin_layout Standard
@@ -720,8 +710,9 @@ Metoda Susan
 
 \begin_layout Standard
 Algorytm SUSAN (ang.
- Smallest Univalue Segment Assimilating Nucleus) polega na znajdowaniu pikseli,
- które w otoczeniu majmałą̨ liczbę punktów o zbliżonej jasności.
+ Smallest Univalue Segment Assimilating Nucleus) opiera się na znajdowaniu
+ pikseli, które mają w swoim otoczeniu małą̨ liczbę punktów o zbliżonej
+ jasności.
 \end_layout
 
 \begin_layout Standard
@@ -852,7 +843,7 @@ Wybieramy piksel
 \end_layout
 
 \begin_layout Enumerate
-Wybieramy wartośc progu 
+Wybieramy wartość progu 
 \begin_inset Formula $t$
 \end_inset
 
@@ -890,7 +881,7 @@ Piksel
 \begin_layout Standard
 Algorytm ten został udoskonalony przez dodanie testu, który pozwala bardzo
  szybko odrzucić dużą liczbę punktów nie będących narożnikami.
- W tym teście sprawdzana jest jasność po kolei pikseli 1, 9, 5, 13.
+ W tym teście sprawdzana jest jasność pikseli 1, 9, 5, 13.
 \end_layout
 
 \begin_layout Standard
@@ -1240,8 +1231,8 @@ Znajdowanie i dopasowywanie punktów charakterystycznych odgrywa ważną rolę
 \end_layout
 
 \begin_layout Standard
-W zagadnieniach praktycznych wyróżnia się 3 podejścia: dopasowywanie obszarów(an
-g.
+W zagadnieniach praktycznych wyróżnia się 3 podejścia: dopasowywanie obszarów
+ (ang.
  
 \begin_inset Quotes pld
 \end_inset
@@ -1250,7 +1241,7 @@ Area-based
 \begin_inset Quotes prd
 \end_inset
 
-), dopasowywanie punktów charakterystycznych oraz dopasowywanie fazowe(ang.
+), dopasowywanie punktów charakterystycznych oraz dopasowywanie fazowe (ang.
  
 \begin_inset Quotes pld
 \end_inset
@@ -1269,8 +1260,8 @@ Phase-based
 \end_layout
 
 \begin_layout Standard
-W celu poprawy dopasowywania metody punktów charakterystycznych, została
- opracowana podwójna metoda Harisa z dopasowywaniem punktów opartym na poziomie
+W celu poprawy dopasowywania metody punktów charakterystycznych opracowana
+ została podwójna metoda Harisa z dopasowywaniem punktów opartym na poziomie
  jasności.
  Algorytm ten składa się z następujących kroków:
 \end_layout
@@ -1280,11 +1271,11 @@ Konwersja obrazu na skalę szarości i filtracja.
 \end_layout
 
 \begin_layout Enumerate
-Wykrycie narożników standardową metodą Harisa.
+Wykrycie narożników standardową metodą Harrisa.
 \end_layout
 
 \begin_layout Enumerate
-Obraz jest dzielony na mniejsze bloki rozmiaru 
+Podział obrazu na mniejsze bloki rozmiaru 
 \begin_inset Formula $n\times n$
 \end_inset
 
@@ -1292,7 +1283,7 @@ Obraz jest dzielony na mniejsze bloki rozmiaru
 \end_layout
 
 \begin_layout Enumerate
-Dokonywana jest interpolacja jasności każdego z regionów.
+Interpolacja jasności każdego z regionów.
 \end_layout
 
 \begin_layout Standard
