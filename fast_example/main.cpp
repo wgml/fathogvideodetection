@@ -11,8 +11,8 @@ Mat src, src_gray;
 int thresh = 20;
 int max_thresh = 50;
 
-char* source_window = "Source image";
-char* corners_window = "Corners detected";
+const char *source_window = "Source image";
+const char *corners_window = "Corners detected";
 
 void Fast_demo(int, void *) {
 
@@ -22,9 +22,9 @@ void Fast_demo(int, void *) {
 
     auto temp = src_gray.clone();
 
-    for(auto keyPoint: points) {
-        int x = keyPoint.pt.x;
-        int y = keyPoint.pt.y;
+    for (auto keyPoint: points) {
+        int x = static_cast<int>(keyPoint.pt.x);
+        int y = static_cast<int>(keyPoint.pt.y);
         Point p{x, y};
         circle(temp, p, 5, Scalar(0));
     }
@@ -33,7 +33,7 @@ void Fast_demo(int, void *) {
     imshow(corners_window, temp);
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
 
     /// Load source image and convert it to gray
     src = imread(argv[1], 1);
@@ -47,5 +47,5 @@ int main(int argc, char** argv) {
     Fast_demo(0, 0);
 
     waitKey(0);
-    return(0);
+    return (0);
 }
