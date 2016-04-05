@@ -1641,13 +1641,110 @@ Porównanie algorytmów.
 
 \end_layout
 
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Ulepszona metoda Harrisa dla wykrywania znaków czcionki chińskiej.
+\end_layout
+
+\begin_layout Standard
+Na podstawie artykułu 
+\begin_inset Quotes pld
+\end_inset
+
+Improved Harris Corner Detection for Chinese Characters
+\begin_inset Quotes prd
+\end_inset
+
+(Na Yao, Tiecheng Bai, Xia Jiang, Haifang Lv).
+\end_layout
+
+\begin_layout Standard
+W artykule zaprezentowano metodę badania znaków języka chińskiego.
+ Polegała ona na zastosowaniu algorytmu Harrisa w celu identyfikacji punktów
+ charakterystycznych, a następnie ich weryfikacji za pomocą metody Fast.
+ W artykule znalazło się również porównanie zaproponowanego sposobu z innymi
+ podejściami do badanego problemu.
+\end_layout
+
+\begin_layout Standard
+Wykrywanie i dopasowywanie punktów charakterystycznych jest kluczowym elementem
+ rozpoznawania znaków.
+ Stosunkowo łatwy zadaniem jest odróżnienie znaku od tła i zidentyfikowanie
+ krawędzi.
+ Ważniejszym krokiem jest jednak określenie długości krawędzi i ich punktów
+ końcowych.
+ Wy wyniku wielu eksperymentów udowodniono, że algorytm Harrisa jest najbardziej
+ efektywną metodą wyznaczania punktów charakterystycznych znaków.
+ Niestety, zwraca on również nadmiarowe informacje.
+ 
+\end_layout
+
+\begin_layout Standard
+Opracowana metoda składa się z następujących kroków:
+\end_layout
+
+\begin_layout Enumerate
+Obraz RGB jest konwertowany na skalę szarości.
+\end_layout
+
+\begin_layout Enumerate
+Narożniki są wykrywane za pomocą ulepszonego algorytmu Harrisa(zwanego algorytme
+m Shi-Tomasa).
+\end_layout
+
+\begin_layout Enumerate
+Współrzędne każdego narożnika jest zapisywane.
+\end_layout
+
+\begin_layout Enumerate
+Okrąg o przekątnej 16 pikseli wokół każdego narożnika jest sprawdzany algorytmu
+ Fast.
+\end_layout
+
+\begin_layout Standard
+Poniższy rysunek prezentuje zestawienie różnych metod wyniki metody:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
 \begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/china.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Wykrywanie punktów charakterystycznych znaków.
+\end_layout
+
+\end_inset
+
 
 \end_layout
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Section
+jakiś artykuł
 \end_layout
 
 \begin_layout Chapter
