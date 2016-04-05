@@ -1711,7 +1711,7 @@ Poniższy rysunek prezentuje zestawienie różnych metod wyniki metody:
 
 \begin_layout Standard
 \begin_inset Float figure
-placement h
+placement H
 wide false
 sideways false
 status open
@@ -1744,11 +1744,139 @@ Wykrywanie punktów charakterystycznych znaków.
 \end_layout
 
 \begin_layout Section
-jakiś artykuł
+Odporny efektywny algorytm wykrywania punktów charakterystycznych.
+\end_layout
+
+\begin_layout Standard
+Na podstawie artykułu 
+\begin_inset Quotes pld
+\end_inset
+
+An efficient and robust corner detection algorithm
+\begin_inset Quotes prd
+\end_inset
+
+(Dongxiang Zhou, Yun-hui Liut, Xuanping Cai).
+\end_layout
+
+\begin_layout Standard
+Artykuł prezentuje ulepszoną wersję algorytmu Susan, której działanie porównywan
+e jest z metodą Harrisa.
+ Wykorzystuje ona lokalną binaryzację opartą na kilku progach kilku progach
+ dobieranych na lokalnej jasności punktu.
+ Podobnie jak w oryginalnej metodzie, zliczana jest liczba punktów o zbliżonej
+ jasności.
+ Nowością w proponowanej metodzie jest ograniczenie się do poszukiwania
+ rogów jedynie na krawędziach.
+ Wykryty punkt jest badany za pomocą maski kołowej, zaprezentowanej poniżej:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/susan.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Maski w algorytmie Susan: a) zwykły punkt, b) krawędź, c) narożnik.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Zaletą stosowanej metody jest odporność na lokalne zakłócenia, gdyż nie
+ wyliczane są żadne gradienty.
+\end_layout
+
+\begin_layout Standard
+Ulepszona metoda SUSAN wprowadza nowy sposób wprowadza nową metodę obliczania
+ progu: opiera się ona na liczbie poziomów szarości i liczbie pikseli mających
+ te poziomy szarości.
+\end_layout
+
+\begin_layout Standard
+Kolejnym usprawnieniem jest podział maski na 2 lub więcej części, w zależności
+ od uzyskanego wcześniej progu.
+\end_layout
+
+\begin_layout Standard
+Rezultat metody prezentuje poniższy obraz:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/susan2.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Wykrywanie punktów charakterystycznych: a) Harris b)Susan c) ulepszony Susan.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Chapter
-Opis systemu detekcji i śledzenia.
+System detekcji i śledzenia.
+\end_layout
+
+\begin_layout Section
+Opis algorytmu
+\end_layout
+
+\begin_layout Section
+Implementacja w C++
 \end_layout
 
 \begin_layout Chapter
