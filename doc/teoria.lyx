@@ -99,7 +99,7 @@ Ważnym zagadnieniem w systemach wizyjnych jest pozyskiwanie informacji z
 \end_layout
 
 \begin_layout Standard
-Wyznaczanie punktów charakterysytcznych ma na celu wybór 
+Wyznaczanie punktów charakterystycznych ma na celu wybór 
 \begin_inset Quotes pld
 \end_inset
 
@@ -107,16 +107,16 @@ interesujących
 \begin_inset Quotes prd
 \end_inset
 
- elemntów bądź rejonów obrazu oraz uzysanie charakterystyki specyficznej
+ elementów bądź rejonów obrazu oraz uzysanie charakterystyki specyficznej
  dla danej aplikacji.
  Jest to często niskopoziomowa składowa bardziej złożonych algorytmów.
  Uzyskanie punktów charakterystycznych pozwala na rozpoznawanie kształtów,
- wyszukiwanie elementów pasujących do wzroca czy też śledzenie obiektów
+ wyszukiwanie elementów pasujących do wzorca czy też śledzenie obiektów
  w obrazie wideo.
 \end_layout
 
 \begin_layout Standard
-Istnieje kilka rodzajów punktów unawanych jako charakterystycznych:
+Istnieje kilka rodzajów punktów uznawanych jako charakterystycznych:
 \end_layout
 
 \begin_layout Itemize
@@ -128,7 +128,15 @@ narożniki,
 \end_layout
 
 \begin_layout Itemize
-krople(blobs ?).
+krople(ang 
+\begin_inset Quotes pld
+\end_inset
+
+blobs
+\begin_inset Quotes prd
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Standard
@@ -1351,14 +1359,524 @@ Dopasowanie punktów charakterystycznych.
 W zaprezentowanym przykładzie błąd wyniósł około 38%.
 \end_layout
 
-\begin_layout Chapter
-s.
- śledzenia punktów.
+\begin_layout Section
+Odporny algorytm dopasowywania szablonów za pomocą wykrywania narożników
+ dla systemów wizyjnych robotów.
  
 \end_layout
 
+\begin_layout Standard
+Na podstawie artykułu 
+\begin_inset Quotes pld
+\end_inset
+
+Robust Template Based Corner Detection Algorithms for Robotic Vision
+\begin_inset Quotes prd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Wykrywanie narożników z powodu wydajności i niskiej złożoności obliczeniowej
+ znalazło szereg zastosowań w systemach wizyjnych robotów.
+ W połączeniu z odpowiednim zaprojektowaniu szablonów poszukiwanych elementów
+ można uzyskać bardzo efektywne aplikacje.
+ W artykule zarezentowano dwa podejścia do tematu: detekcja na podstawie
+ dopasowywania narożników(MBCD - ang.
+ 
+\begin_inset Quotes pld
+\end_inset
+
+matching based corner detection
+\begin_inset Quotes prd
+\end_inset
+
+) oraz dopasowywanie na podstawie korelacji punktów(CBCD - ang.
+ 
+\begin_inset Quotes pld
+\end_inset
+
+correlation based corner detection
+\begin_inset Quotes prd
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+Z powodu ograniczonych zasobów sprzętowych w systemach wizyjnych robotów
+ kluczowym elementem jest dobór algorytmu i poszukiwanych obiektów.
+ Systemy te muszą działać na podobnej zasadzie co układ wzrokowy człowieka:
+ być szczególnie czułym na elementy o wysokiej częstotliwości, takie jak
+ krawędzie oraz narożniki.
+\end_layout
+
+\begin_layout Standard
+Istniejące metody wykrywania punktów charakterystycznych można podzielić
+ na dwie grupy: oparte na obliczaniu gradientów lub poszukiwaniu podobieństw.
+ Pierwsza grupa algorytmów jest czuła na zakłócenia.
+ Druga grupa algorytmów opiera się na poszukiwaniu podobieństw pomiędzy
+ pikselami.
+ 
+\end_layout
+
+\begin_layout Standard
+W wykorzystaniu szablonów zasadnicze znaczenie mają dwie kwestie: jakiego
+ typu użyć szablon oraz jak zmierzyć różnice.
+ Przykładowe szablony do wykrywania rogów prezentuje poniższy obraz:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/templates.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Szablony do wykrywania narożników.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Pomiar różnic pomiędzy szablonami dokonywany jest za pomocą 3 metod: korelacji
+ znormalizowanej, normy ko-sinusowej oraz pomiarze odwzorowania.
+ 
+\end_layout
+
+\begin_layout Standard
+Wykorzystanie szablonów opiera się na założeniu, że w obrazie istnieją idealne
+ narożniki.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/ideal.png
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Przykłady narożniki.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Metoda MBCD polega na wykorzystaniu trzech poniższych szablonów:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/templates2.png
+	scale 75
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Szablony metody MBCD.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Następnie, każdy z tych szablonów jest obracany o 90 stopni w wyniku czego
+ otrzymujemy 12 szablonów.
+ Punkt jest uznawany za narożnik jeśli pasuje do co najmniej dwóch z pośród
+ wszystkich szablonów.
+\end_layout
+
+\begin_layout Standard
+Metoda CBCD posługuje się 3 szablonami:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/templates3.png
+	scale 75
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Szablony metody CBCD.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Są one obracane o 90 stopni, wy wyniku czego otrzymuje się się 9 szablonów.
+ Piksel jest testowany pod względem podobieństwa z każdy z tych szablonów.
+\end_layout
+
+\begin_layout Standard
+Poniższy obraz prezentuje porównanie algorytmów wykrywania rogów w systemach
+ wizyjnych robotów:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/templates4.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Porównanie algorytmów.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Ulepszona metoda Harrisa dla wykrywania znaków czcionki chińskiej.
+\end_layout
+
+\begin_layout Standard
+Na podstawie artykułu 
+\begin_inset Quotes pld
+\end_inset
+
+Improved Harris Corner Detection for Chinese Characters
+\begin_inset Quotes prd
+\end_inset
+
+(Na Yao, Tiecheng Bai, Xia Jiang, Haifang Lv).
+\end_layout
+
+\begin_layout Standard
+W artykule zaprezentowano metodę badania znaków języka chińskiego.
+ Polegała ona na zastosowaniu algorytmu Harrisa w celu identyfikacji punktów
+ charakterystycznych, a następnie ich weryfikacji za pomocą metody Fast.
+ W artykule znalazło się również porównanie zaproponowanego sposobu z innymi
+ podejściami do badanego problemu.
+\end_layout
+
+\begin_layout Standard
+Wykrywanie i dopasowywanie punktów charakterystycznych jest kluczowym elementem
+ rozpoznawania znaków.
+ Stosunkowo łatwy zadaniem jest odróżnienie znaku od tła i zidentyfikowanie
+ krawędzi.
+ Ważniejszym krokiem jest jednak określenie długości krawędzi i ich punktów
+ końcowych.
+ Wy wyniku wielu eksperymentów udowodniono, że algorytm Harrisa jest najbardziej
+ efektywną metodą wyznaczania punktów charakterystycznych znaków.
+ Niestety, zwraca on również nadmiarowe informacje.
+ 
+\end_layout
+
+\begin_layout Standard
+Opracowana metoda składa się z następujących kroków:
+\end_layout
+
+\begin_layout Enumerate
+Obraz RGB jest konwertowany na skalę szarości.
+\end_layout
+
+\begin_layout Enumerate
+Narożniki są wykrywane za pomocą ulepszonego algorytmu Harrisa(zwanego algorytme
+m Shi-Tomasa).
+\end_layout
+
+\begin_layout Enumerate
+Współrzędne każdego narożnika jest zapisywane.
+\end_layout
+
+\begin_layout Enumerate
+Okrąg o przekątnej 16 pikseli wokół każdego narożnika jest sprawdzany algorytmu
+ Fast.
+\end_layout
+
+\begin_layout Standard
+Poniższy rysunek prezentuje zestawienie różnych metod wyniki metody:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/china.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Wykrywanie punktów charakterystycznych znaków.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Odporny efektywny algorytm wykrywania punktów charakterystycznych.
+\end_layout
+
+\begin_layout Standard
+Na podstawie artykułu 
+\begin_inset Quotes pld
+\end_inset
+
+An efficient and robust corner detection algorithm
+\begin_inset Quotes prd
+\end_inset
+
+(Dongxiang Zhou, Yun-hui Liut, Xuanping Cai).
+\end_layout
+
+\begin_layout Standard
+Artykuł prezentuje ulepszoną wersję algorytmu Susan, której działanie porównywan
+e jest z metodą Harrisa.
+ Wykorzystuje ona lokalną binaryzację opartą na kilku progach kilku progach
+ dobieranych na lokalnej jasności punktu.
+ Podobnie jak w oryginalnej metodzie, zliczana jest liczba punktów o zbliżonej
+ jasności.
+ Nowością w proponowanej metodzie jest ograniczenie się do poszukiwania
+ rogów jedynie na krawędziach.
+ Wykryty punkt jest badany za pomocą maski kołowej, zaprezentowanej poniżej:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/susan.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Maski w algorytmie Susan: a) zwykły punkt, b) krawędź, c) narożnik.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Zaletą stosowanej metody jest odporność na lokalne zakłócenia, gdyż nie
+ wyliczane są żadne gradienty.
+\end_layout
+
+\begin_layout Standard
+Ulepszona metoda SUSAN wprowadza nowy sposób wprowadza nową metodę obliczania
+ progu: opiera się ona na liczbie poziomów szarości i liczbie pikseli mających
+ te poziomy szarości.
+\end_layout
+
+\begin_layout Standard
+Kolejnym usprawnieniem jest podział maski na 2 lub więcej części, w zależności
+ od uzyskanego wcześniej progu.
+\end_layout
+
+\begin_layout Standard
+Rezultat metody prezentuje poniższy obraz:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/susan2.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Wykrywanie punktów charakterystycznych: a) Harris b)Susan c) ulepszony Susan.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Chapter
-Opis całości systemu (detekcja + śledzenie z ramki na ramkę).
+System detekcji i śledzenia.
+\end_layout
+
+\begin_layout Section
+Opis algorytmu
+\end_layout
+
+\begin_layout Section
+Implementacja w C++
 \end_layout
 
 \begin_layout Chapter
