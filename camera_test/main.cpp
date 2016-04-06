@@ -70,7 +70,7 @@ int main() {
         imshow("fast", fastFrame);
 
         auto harrisFrame = frame.clone();
-        auto harrisPoints = cornerFast(harrisFrame);
+        auto harrisPoints = cornerHarris(harrisFrame);
         drawPoints(harrisFrame, harrisPoints, Scalar{0, 0, 255});
         imshow("harris", harrisFrame);
 
