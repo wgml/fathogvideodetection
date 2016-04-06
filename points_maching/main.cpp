@@ -1,71 +1,62 @@
 #include <opencv2/opencv.hpp>
-#include <opencv2/highgui.hpp>
-#include <opencv2/imgproc.hpp>
-#include <opencv2/features2d.hpp>
-#include <opencv2/core.hpp>
-#include <opencv2/imgcodecs.hpp>
-#include <opencv2/xfeatures2d.hpp>
-
-#include <vector>
-#include <thread>
-#include <chrono>
+#include "opencv2/xfeatures2d.hpp"
+#include <queue>
 
 using namespace cv;
-using namespace cv::xfeatures2d;
 
-std::vector<Point> cornerHarris(Mat &inputFrame, int thresh = 150, int blockSize = 3, int apertureSize = 3, double k = 0.04) {
-    Mat grayFrame, resultFrameNorm, resultFrameNormScaled;
-    Mat resultFrame = Mat::zeros(inputFrame.size(), CV_32FC1);
-    cvtColor(inputFrame, grayFrame, COLOR_BGR2GRAY);
-    cornerHarris(grayFrame, resultFrame, blockSize, apertureSize, k, BORDER_DEFAULT );
-    normalize(resultFrame, resultFrameNorm, 0, 255, NORM_MINMAX, CV_32FC1, Mat());
-    convertScaleAbs(resultFrameNorm, resultFrameNormScaled);
+void getImgFeatures(const Mat &img1, const Mat &img2, const Mat &img_matches);
+void getImgHarris(const Mat &img1, const Mat &img2, Mat &img_matches);
+std::vector<Point> getPointsHarris(const Mat& img);
 
-    std::vector<Point> points;
+void featureMatching(Mat img1, Mat img2, bool use_features = true) {
+    Mat img_matches{img2};
 
-    for (int j=0; j<resultFrameNorm.rows; j++) {
-        for (int i=0; i<resultFrameNorm.cols; i++) {
-            if (int(resultFrameNorm.at<float>(j,i)) > thresh) {
-                //
-                points.push_back(Point{i, j});
-            }
+    if (use_features) {
+        getImgFeatures(img1, img2, img_matches);
+    } else {
+        getImgHarris(img1, img2, img_matches);
+    }
+    imshow("Good Matches", img_matches);
+}
+
+int main() {
+    VideoCapture cap(0);
+    if(!cap.isOpened())
+        return -1;
+    namedWindow("Good Matches", 1);
+
+    std::queue<Mat> frames{};
+    Mat frame;
+    const unsigned int FACTOR = 10;
+
+    while(1) {
+        cap >> frame;
+        frames.push(frame.clone());
+        if (frames.size() < FACTOR) {
+            continue;
         }
+        frames.pop();
+        try {
+            featureMatching(frames.front(), frame, false);
+        } catch (Exception e) {
+            std::cerr << "catched opencv exception: " << e.what() << std::endl;
+        }
+
+        if(waitKey(30) >= 0)
+            break;
     }
-
-    return points;
+    return 0;
 }
 
-std::vector<Point> cornerFast(Mat &inputFrame, int thresh=50) {
-    Mat grayFrame;
-    cvtColor(inputFrame, grayFrame, COLOR_BGR2GRAY);
-
-    std::vector<KeyPoint> keyPoints;
-    std::vector<Point> points;
-
-    FAST(grayFrame, keyPoints, thresh);
-
-    for (auto keyPoint: keyPoints) {
-        points.push_back(Point{int(keyPoint.pt.x), int(keyPoint.pt.y)});
-    }
-
-    return points;
-}
-
-void drawPoints(Mat &frame, std::vector<Point> points, Scalar color, int lineWidht=2, int radius=5) {
-    for (auto point: points)
-        circle(frame, point, 5, color, lineWidht);
-}
-
-void featureMatching(Mat img1, Mat img2) {
-    int minHessian = 400;
-
-    auto detector = SurfFeatureDetector::create(minHessian);
+void getImgFeatures(const Mat &img1, const Mat &img2, const Mat &img_matches) {
+    int minHessian = 10000;
+    auto detector = cv::xfeatures2d::SURF::create(minHessian);
     std::vector<KeyPoint> keypoints_1, keypoints_2;
 
     detector->detect( img1, keypoints_1 );
     detector->detect( img2, keypoints_2 );
 
-    auto extractor = SurfDescriptorExtractor::create();
+    auto extractor = cv::xfeatures2d::SURF::create();
 
     Mat descriptors_1, descriptors_2;
 
@@ -76,7 +67,8 @@ void featureMatching(Mat img1, Mat img2) {
     std::vector<DMatch> matches;
     matcher.match(descriptors_1, descriptors_2, matches);
 
-    double max_dist = 0; double min_dist = 100;
+    double max_dist = -1e6;
+    double min_dist = 1e6;
     for( int i = 0; i < descriptors_1.rows; i++ ) {
         double dist = matches[i].distance;
         if (dist < min_dist)
@@ -92,58 +84,53 @@ void featureMatching(Mat img1, Mat img2) {
         { good_matches.push_back( matches[i]); }
     }
 
-    //-- Draw only "good" matches
-    Mat img_matches;
-    drawMatches(img1, keypoints_1, img2, keypoints_2,
-                 good_matches, img_matches, Scalar::all(-1), Scalar::all(-1),
-                 std::vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
-
-    //-- Show detected matches
-    imshow("Good Matches", img_matches);
-
+    for (auto & element : good_matches) {
+        auto & match1 = keypoints_1[element.queryIdx].pt;
+        auto & match2 = keypoints_2[element.trainIdx].pt;
+        circle(img_matches, match1, 3, ::cv::Scalar_<double>::all(-1));
+        if (element.distance > 0) {
+            circle(img_matches, match2, 3, Scalar{0, 0, 255, 255});
+            line(img_matches, match1, match2, Scalar{0, 255, 0, 255});
+        }
+    }
 }
 
-int main() {
-    VideoCapture cap(0);
-    if(!cap.isOpened())
-        return -1;
-    namedWindow("Good Matches", 1);
-//    namedWindow("previous", 1);
-//    namedWindow("current", 1);
+void getImgHarris(const Mat &img1, const Mat &img2, Mat &img_matches) {
+    img_matches = img2.clone();
 
-    Mat previousFrame, currentFrame;
-    std::vector<Point> previousPoints, currentPoints;
+    std::vector<Point> points1 = getPointsHarris(img1);
+    std::vector<Point> points2 = getPointsHarris(img2);
 
-    //odczyt pierwszej ramki
-    Mat frame;
-    cap >> frame;
-    previousFrame = frame.clone();
-    //previousPoints = cornerFast(previousFrame);
-    //drawPoints(previousFrame, previousPoints, Scalar{255, 0, 0});
-
-    currentFrame = previousFrame.clone();
-    currentPoints = previousPoints;
-
-    while(1) {
-        Mat frame;
-        cap >> frame;
-        previousFrame = currentFrame.clone();
-        previousPoints = currentPoints;
-
-        currentFrame = frame.clone();
-        //currentPoints = cornerFast(currentFrame);
-        //drawPoints(currentFrame, currentPoints, Scalar{255, 0, 0});
-
-//        imshow("previous", previousFrame);
-//        imshow("current", currentFrame);
-
-        featureMatching(previousFrame, currentFrame);
-
-        // std::this_thread::sleep_for(std::chrono::seconds(1));
-
-        if(waitKey(30) >= 0)
-            break;
+    for (auto &element : points1) {
+        circle(img_matches, element, 3, ::cv::Scalar_<double>::all(-1));
     }
+    for (auto &element : points2) {
+        circle(img_matches, element, 3, Scalar{0, 0, 255, 255});
+    }
+}
+std::vector<Point> getPointsHarris(const Mat& img) {
+    Mat src_gray, dst, dst_norm;
+    dst = Mat::zeros(img.size(), CV_32FC1);
 
-    return 0;
+    /// Detector parameters
+    int blockSize = 2;
+    int apertureSize = 3;
+    double k = 0.04;
+
+    /// Detecting corners
+    cvtColor(img, src_gray, COLOR_BGR2GRAY);
+    cornerHarris(src_gray, dst, blockSize, apertureSize, k, BORDER_DEFAULT);
+
+    /// Normalizing
+    normalize(dst, dst_norm, 0, 255, NORM_MINMAX, CV_32FC1, Mat());
+
+    /// Drawing a circle around corners
+    std::vector<Point> points{};
+    for (int j = 0; j < dst_norm.rows; j++) {
+        for (int i = 0; i < dst_norm.cols; i++) {
+            if ((int) dst_norm.at<float>(j, i) > 200)
+                points.emplace_back(Point(i, j));
+        }
+    }
+    return points;
 }
