@@ -1,0 +1,9 @@
+8
+black
+silver
+white
+red
+yellow
+green
+blue
+glass

@@ -1,0 +1,3 @@
+[Project]
+Manager=KDevCustomMakeManager
+Name=vd_softModel_queue_only
