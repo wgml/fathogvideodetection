@@ -11,25 +11,27 @@
 
 class queue_single_lane {
 public:
-	queue_single_lane();
-	~queue_single_lane();
+    queue_single_lane() = default;
 
-	void initSingleLane(std::string lineName, int nRois, queueROIPolygon* queueROIsPolygon, queueROIPolygon analysisROI, colourRecognition *colourR, typeRecognitionLBP *typeR);
+    ~queue_single_lane() = default;
 
-	void step(cv::Mat & image_grey, cv::Mat & image_rgb, cv::Mat & image_lbp, cv::Mat & movementMask, cv::Mat & edgeMask, cv::Mat & darkAreaMask, cv::Mat & image_vis);
+    void initSingleLane(std::string lineName, int nRois, queueROIPolygon *queueROIsPolygon,
+                        queueROIPolygon analysisROI, colourRecognition *colourR,
+                        typeRecognitionLBP *typeR);
 
-	std::vector<queue_roi>& getRois() { return m_queue_ROIs; };
+    void step(cv::Mat &image_grey, cv::Mat &image_rgb, cv::Mat &image_lbp, cv::Mat &movementMask,
+              cv::Mat &edgeMask, cv::Mat &darkAreaMask, cv::Mat &image_vis);
 
 private:
-	int m_iNqueueROIs;
-	int m_iGt;
+    int m_iNqueueROIs;
+    int m_iGt;
 
-	int m_iQueueLenght;
-	int m_iQueueCounter[10];
+    int m_iQueueLenght;
+    int m_iQueueCounter[10];
 
-	std::vector<queue_roi> m_queue_ROIs;
+    std::vector<queue_roi> m_queue_ROIs;
 
-	vAnalysis *m_pvehicleAnalysis;                 // modul analizy pojazdu (kolor, typ, itp.)
+    vAnalysis *m_pvehicleAnalysis;                 // modul analizy pojazdu (kolor, typ, itp.)
 
 };
 

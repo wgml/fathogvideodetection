@@ -16,34 +16,29 @@
 // Obsluga calego obrazu
 
 using coord = std::pair<int, int>;
+
 class queueSystem {
 
 public:
-	queueSystem(int iLanes, int *iqueueROIs, int *gtQueue, std::string *names, queueROIPolygon **queueROIs, queueROIPolygon *analysisROIs);
-	~queueSystem();
+    queueSystem(int iLanes, int *iqueueROIs, int *gtQueue, std::string *names,
+                queueROIPolygon **queueROIs, queueROIPolygon *analysisROIs);
 
-	void readjustSystem(coord tl, coord tr, coord bl, coord br);
-	void step(cv::Mat & image_grey, cv::Mat & image_rgb, cv::Mat & image_lbp, cv::Mat & movementMask, cv::Mat & edgeMask, cv::Mat & image_vis);
-	//void summary();
+    ~queueSystem();
 
-
+    void step(cv::Mat &image_grey, cv::Mat &image_rgb, cv::Mat &image_lbp, cv::Mat &movementMask,
+              cv::Mat &edgeMask, cv::Mat &image_vis);
 
 private:
 
-	int m_iNsingleLanes;								  //!< liczba analizowanych pasow ruchu
-	int *m_piQueueROIs;									  //!< liczba obszarow zainteresownia w ramach danej linii
+    int m_iNsingleLanes;                                  //!< liczba analizowanych pasow ruchu
+    int *m_piQueueROIs;                                      //!< liczba obszarow zainteresownia w ramach danej linii
 
-	cv::Mat image_rgb_prev;								  //!< poprzednia ramka obrazu
+    cv::Mat image_rgb_prev;                                  //!< poprzednia ramka obrazu
 
-    colourRecognition  m_colourR;                          //!< obiekt do rozpoznawnia kolorow
+    colourRecognition m_colourR;                          //!< obiekt do rozpoznawnia kolorow
     typeRecognitionLBP m_typeR;                            //!< obiekt do rozpoznawnia typu pojadu
 
-
-	std::vector<queue_single_lane> m_queueSingleLanes;    //!< obsluga pojedynczej linii
-
-
-
+    std::vector<queue_single_lane> m_queueSingleLanes;    //!< obsluga pojedynczej linii
 };
-
 
 #endif

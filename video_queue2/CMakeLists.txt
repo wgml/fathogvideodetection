@@ -23,7 +23,7 @@ set(SOURCE_FILES main.cpp
         car_analysis/vAnalysis.h
         common/edgeDetectionFPGA.cpp
         common/edgeDetectionFPGA.h
-        )
+        polygon/Polygon.cpp polygon/Polygon.h)
 
 find_package( OpenCV REQUIRED )
 include_directories( ${OpenCV_INCLUDE_DIRS} )
