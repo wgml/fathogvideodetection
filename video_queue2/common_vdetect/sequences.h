@@ -8,10 +8,14 @@
 
 
 // TODO
-// + to trzeba jakoœ lepiej wymyslic ( bardziej kompatktowy sposob opisu)
+// + to trzeba jakoï¿½ lepiej wymyslic ( bardziej kompatktowy sposob opisu)
 
 class sequence {
 public:
+	sequence() {};
+	sequence(int width, int height, std::vector<std::pair<int, int>> coords, int lanes, int numRois,
+			 int sepLanes, int sepRois, int movementTh, int edgeTh, cv::Mat image);
+
 	std:: string path;		//!< sciezka do folderu z sekwencja (w postci zbioru obrazkow)
 	int iXX;                //!< rozdzielczosc pozioma sekwencji
 	int iYY;                //!< rozdzielczosc pionowa sekwencji

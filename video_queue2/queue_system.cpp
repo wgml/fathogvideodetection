@@ -72,6 +72,65 @@ void queueSystem::step(cv::Mat & image_grey, cv::Mat & image_rgb, cv::Mat & imag
 
 }
 
+void queueSystem::readjustSystem(coord tl, coord tr, coord bl, coord br) {
+	const int numLanes = m_iNsingleLanes;
+
+	const int dXTop = (tr.first - tl.first) / numLanes;
+	const int dYTop = (tr.second - tl.second) / numLanes;
+	const int dXBottom = (br.first - bl.first) / numLanes;
+	const int dYBottom = (br.second - bl.second) / numLanes;
+
+	for (int lane = 0; lane < numLanes; lane++) {
+		coord lane_tl = std::make_pair(
+				tl.first + lane * dXTop,
+				tl.second + lane * dYTop
+		);
+		coord lane_tr = std::make_pair(
+				lane_tl.first + dXTop,
+				lane_tl.second + dYTop
+		);
+		coord lane_bl = std::make_pair(
+				bl.first + lane * dXBottom,
+				bl.second + lane * dYBottom
+		);
+		coord lane_br = std::make_pair(
+				lane_bl.first + dXBottom,
+				lane_bl.second + dYBottom
+		);
+
+
+		std::vector<queue_roi>& lane_rois = m_queueSingleLanes[lane].getRois();
+		const int numRois = m_piQueueROIs[lane];
+
+		const int dXLeft = (lane_bl.first - lane_tl.first) / numRois;
+		const int dYLeft = (lane_bl.second - lane_tl.second) / numRois;
+		const int dXRight = (lane_br.first - lane_tr.first) / numRois;
+		const int dYRight = (lane_br.second - lane_tr.second) / numRois;
+
+		for (int roi = 0; roi < numRois; roi++) {
+			queue_roi qr = lane_rois[roi];
+			coord roi_tl = std::make_pair(
+					lane_tl.first + roi * dXLeft,
+					lane_tl.second + roi * dYLeft
+			);
+			coord roi_tr = std::make_pair(
+					roi_tl.first + dXLeft,
+					roi_tl.second + dYLeft
+			);
+			coord roi_bl = std::make_pair(
+					lane_bl.first + roi * dXRight,
+					lane_bl.second + roi * dYRight
+			);
+			coord roi_br = std::make_pair(
+					roi_bl.first + dXRight,
+					roi_bl.second + dYRight
+			);
+			qr.readjust(roi_tl, roi_tr, roi_bl, roi_br);
+		}
+	}
+}
+
+
 // sumary
 // ------------------------------------------------------------------------------------------------------------
 /*

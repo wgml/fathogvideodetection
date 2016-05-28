@@ -83,7 +83,7 @@ bool queue_roi::step(cv::Mat movementMask, cv::Mat edgeMask, cv::Mat image_grey)
 	}
 
     // Srednia wartosc szarosci
-	m_meanGreyValue = grayCounter / pixelCounter;
+	m_meanGreyValue = grayCounter / (pixelCounter+1);
 	// debug
 	std::cout << "m_meanGreyValue "<< m_meanGreyValue <<std::endl;
 
@@ -292,7 +292,21 @@ bool queue_roi::median1DFilter(bool res, int & medianCounter ) {
 		medianCounter = 0;
 
 	return medianCounter > MEDIAN_1D_SIZE / 2;
+}
 
-
-
+void queue_roi::readjust(coord tl, coord tr, coord bl, coord br) {
+	queueROIPolygon polygon;
+	polygon.TL.x = tl.first;
+	polygon.TL.y = tl.second;
+	polygon.TR.x = tr.first;
+	polygon.TR.y = tr.second;
+	polygon.BL.x = bl.first;
+	polygon.BL.y = bl.second;
+	polygon.BR.x = br.first;
+	polygon.BR.y = br.second;
+	polygon.edgeTh = m_queueROI.edgeTh;
+	polygon.movementTh = m_queueROI.movementTh;
+	m_queueROI = polygon;
+	computeROIlineParams();
+	m_darkAreas = cv::Mat::zeros(m_ROIBbox.height, m_ROIBbox.width, CV_8U);
 }

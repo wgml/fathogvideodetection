@@ -211,9 +211,9 @@ void advEdgeDetection(const cv::Mat ER, const cv::Mat EG, const cv::Mat EB, int 
 
 				for (int ii = i-contextSize2; ii <= i+contextSize2; ii++)
 					for (int jj = j-contextSize2; jj <= j+contextSize2; jj++) {
-						std_R += abs(ER.at<float>(ii,jj)-mean_R);
-						std_G += abs(EG.at<float>(ii,jj)-mean_G);
-						std_B += abs(EB.at<float>(ii,jj)-mean_B);
+						std_R += fabs(ER.at<float>(ii,jj)-mean_R);
+						std_G += fabs(EG.at<float>(ii,jj)-mean_G);
+						std_B += fabs(EB.at<float>(ii,jj)-mean_B);
 					}
 
 				if ( ( (std_R > stdThreshold) && (ER.at<float>(i,j) > threshold) && (ER.at<float>(i,j)  > 1.00*mean_R) ) ||

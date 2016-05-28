@@ -437,7 +437,7 @@ void vAnalysis::diff_th_rgb(cv::Mat A, cv::Mat B, cv::Mat roiMask, cv::Mat  & ma
 	for (int j = 0; j < A.rows; j++) {
 		for (int i = 0; i < A.cols; i++) {
 
-			// Jeœli jestemy wewn¹trz ROI
+			// Jeï¿½li jestemy wewnï¿½trz ROI
 			if (roiMask.at<uchar>(j, i) > 0) {
 
 				// Pobranie pixela z dwoch obrazkow
@@ -446,9 +446,9 @@ void vAnalysis::diff_th_rgb(cv::Mat A, cv::Mat B, cv::Mat roiMask, cv::Mat  & ma
 
 
 				// Obliczanie odleglosci (w RGB)
-				double dR = abs(double(p[0]) - double(b[0]));
-				double dG = abs(double(p[1]) - double(b[1]));
-				double dB = abs(double(p[2]) - double(b[2]));
+				double dR = fabs(double(p[0]) - double(b[0]));
+				double dG = fabs(double(p[1]) - double(b[1]));
+				double dB = fabs(double(p[2]) - double(b[2]));
 
 				// Wybranie maksymalnej
 				double temp;
@@ -486,7 +486,7 @@ void vAnalysis::diff_th_grey(cv::Mat A, cv::Mat B, cv::Mat roiMask, cv::Mat  & m
 	for (int j = 0; j < A.rows; j++) {
 		for (int i = 0; i < A.cols; i++) {
 
-			// Jeœli jestemy wewnatrz ROI
+			// Jeï¿½li jestemy wewnatrz ROI
 			if (roiMask.at<uchar>(j, i) > 0) {
 
 				// Pobranie pixela z dwoch obrazkow
@@ -495,7 +495,7 @@ void vAnalysis::diff_th_grey(cv::Mat A, cv::Mat B, cv::Mat roiMask, cv::Mat  & m
 
 
 				// Obliczanie odleglosci (w RGB)
-				double dG = abs(double(p[0]) - double(b[0]));
+				double dG = fabs(double(p[0]) - double(b[0]));
 
 
 				// Segmentacja

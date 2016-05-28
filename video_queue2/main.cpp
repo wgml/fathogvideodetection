@@ -8,7 +8,9 @@
 
 #include <time.h>
 #include <iostream>
-
+#include <opencv2/highgui/highgui.hpp>
+#include <utility>
+#include <vector>
 
 //using namespace std;
 
@@ -19,30 +21,52 @@
 // PARAMETRY SYGNALU Z KAMERY
 #define XX 640
 #define YY 480
+std::vector<coord> coords{};
+void mouseCallback(int event, int x, int y, int flags, void* data) {
+    if (event != cv::EVENT_LBUTTONDOWN)
+        return;
+    coords.push_back(std::make_pair(x, y));
+}
 
+sequence* sequence_from_camera(cv::VideoCapture& cap) {
+    cv::Mat image;
+    cv::namedWindow("Wybierz punkty krancowe ukladu");
+    cv::setMouseCallback("Wybierz punkty krancowe ukladu", mouseCallback, NULL);
+    while(1) {
+        cap >> image;
+        cv::imshow("Wybierz punkty krancowe ukladu", image);
+        if ( cv::waitKey(10) > 0 || coords.size()>=4) {
+            cv::destroyAllWindows();
+            break;
+        }
+    }
 
+    if (coords.size() != 4) {
+        throw "Nie podano czterech punktow startowych";
+    }
 
-// TODO !!!!!!!!!!!!
-// - obliczanie kawerdzi nie metoda Canny
-// - dodanie LBP do operacji globlanych
-// - co to sa za filtry medianowa w module queue_roi
-// - o co chodzi z tym darkGray (czy to nie dziala, czy co ?)
+    int movementTh = 100;
+    int edgeTh = 100;
+    int lanes = 4;
+    int roisPerLane = 3;
+    int width = image.cols;
+    int height = image.rows;
+    int sepLanes = 5;
+    int sepRois = 5;
+    return new sequence(width, height, coords, lanes, roisPerLane, sepLanes, sepRois, movementTh, edgeTh, image);
 
-// DOBOR PROGOW
-// Sobel/Canny
-// Odejmowanie ramek
+}
 
 int main()
 {
 
     // Sekwencja do analizy (konfiguracja w pliku)
-    sequences S("/home/vka/Programming/C/workspace/fathogvideodetection/video_queue2/queue_demo.txt");
 
     // Obikety
     frameImageProcessing *p_FIP=NULL;   // operacje globalne dla ramki
     queueSystem *p_QS=NULL;             // system kolejek
     //vdlSystem   *p_vdlS=NULL;         // system linii detekcji
-    cv::VideoCapture cap(2);                // open the default camera
+    cv::VideoCapture cap(0);                // open the default camera
 
     if(!cap.isOpened())                 // check if we succeeded
         return -1;
@@ -58,17 +82,17 @@ int main()
     cv::Mat gaussianImage;    // obraz po filtracji Gaussa
 
     // Zmienne pomocnicze
-    char buffer[100];
     clock_t t1,t2;              // Obliczenia czasu trwania
 
 
-    int iSequence = 0;          // numer sekwencji - na sztywno 0 (kompatybilność)
+    sequence* seq = sequence_from_camera(cap);
+
+    sequence sq = *seq;
 
     // Obiekty globalne
     p_FIP = new frameImageProcessing(YY, XX);                                                                                                                                                // operacje na poziomie ramki obrazu
-    p_QS = new queueSystem(S.m_seq[iSequence].iLanes, S.m_seq[iSequence].iqueueROIs, NULL, S.m_seq[iSequence].sName, S.m_seq[iSequence].queueROIs,S.m_seq[iSequence].analysisROIs);          // system kolejek + analiza
-
-    //p_vdlS = new vdlSystem(S.m_seq[iSequence].iLanes, S.m_seq[iSequence].iVdls, S.m_seq[iSequence].gtCounting, S.m_seq[iSequence].sName, S.m_seq[iSequence].lineStartX, S.m_seq[iSequence].lineStartY, S.m_seq[iSequence].lineEndX, S.m_seq[iSequence].lineEndY); // system linii detekcji
+//    p_QS = new queueSystem(S.m_seq[iSequence].iLanes, S.m_seq[iSequence].iqueueROIs, NULL, S.m_seq[iSequence].sName, S.m_seq[iSequence].queueROIs,S.m_seq[iSequence].analysisROIs);          // system kolejek + analiza
+    p_QS = new queueSystem(sq.iLanes, sq.iqueueROIs, nullptr, sq.sName, sq.queueROIs, sq.analysisROIs);
 
     t1=clock();
     for (;;) {
@@ -119,7 +143,7 @@ int main()
         t2=clock();
         float diff ((float)t2-(float)t1);
         float seconds = diff/CLOCKS_PER_SEC;
-        float noFrames = S.m_seq[iSequence].iEnd - S.m_seq[iSequence].iStart;
+        float noFrames = sq.iEnd - sq.iStart;
         std::cout<<"FRAMES = "<< noFrames         <<std::endl;
         std::cout<<"TIME = "  << seconds          <<std::endl;
         std::cout<<"FPS = "   << noFrames/seconds <<std::endl;
@@ -127,25 +151,5 @@ int main()
         // Kasowanie obiektow tymczasowych
         if (p_FIP) delete p_FIP;
 		if (p_QS) delete p_QS;
-		//if (p_vdlS) delete p_vdlS;
-
-
-
-    //cv::viz::Viz3d window = cv::viz::Viz3d("Viz demonstration");
-
-
-    //cv::Point3d min(0.25, 0.0, 0.25);
-    //cv::Point3d max(0.75, 0.5, 0.75);
-
-    //cv::viz::WCube cube(min, max, true, cv::viz::Color::blue());
-    //cube.setRenderingProperty(cv::viz::LINE_WIDTH, 4.0);
-
-    //window.showWidget("Axis widget", cv::viz::WCoordinateSystem());
-    //window.showWidget("Cube widget", cube);
-
-    //while(!window.wasStopped()) {
-    //    window.spinOnce(1, true);
-    //}
-
     return 0;
 }

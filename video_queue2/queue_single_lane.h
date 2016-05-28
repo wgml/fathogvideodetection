@@ -18,6 +18,7 @@ public:
 
 	void step(cv::Mat & image_grey, cv::Mat & image_rgb, cv::Mat & image_lbp, cv::Mat & movementMask, cv::Mat & edgeMask, cv::Mat & darkAreaMask, cv::Mat & image_vis);
 
+	std::vector<queue_roi>& getRois() { return m_queue_ROIs; };
 
 private:
 	int m_iNqueueROIs;

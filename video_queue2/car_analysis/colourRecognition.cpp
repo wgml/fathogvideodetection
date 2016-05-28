@@ -78,7 +78,7 @@ std::string colourRecognition::recognizeColour(cv::Mat I, cv::Mat mask){
 
 					//cv::Mat z = -0.5 * ((dx))*cov*(dx.t());
 
-					double zz = abs(dx1) + 2*(abs(dx2) + abs(dx3)); // obliczenie sumy modulow
+					double zz = fabs(dx1) + 2*(fabs(dx2) + fabs(dx3)); // obliczenie sumy modulow
 
                     if ( zz < minV) {
                         minC = c;

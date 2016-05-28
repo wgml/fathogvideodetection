@@ -4,11 +4,11 @@
 #include <opencv2/highgui/highgui.hpp>
 #include "globals.h"
 #include <iostream>
-
+#include <utility>
 
 #define MEDIAN_1D_SIZE 11
 
-
+using coord = std::pair<int, int>;
 // Klasa dla pojedycznego obszaru detekcji
 class queue_roi {
 
@@ -18,7 +18,7 @@ public:
 
 	bool step(cv::Mat movementMask, cv::Mat edgeMask, cv::Mat image_grey);
 	void draw(cv::Mat image_vis, cv::Mat image_grey);
-
+	void readjust(coord tl, coord tr, coord bl, coord br);
 	// tymczasowo
 	queueROIPolygon m_queueROI;	  //!< wspolrzedne ROI
 

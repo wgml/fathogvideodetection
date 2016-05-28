@@ -11,7 +11,7 @@ frameImageProcessing::frameImageProcessing(int YY, int XX) {
 	// ustawienie parametrow (na razie z globalnej bazy)
 	m_iframeDiffTh = FRAMEOP_FRAME_DIFF_TH;
 
-	// stworzenie obrazków
+	// stworzenie obrazkï¿½w
 	image_rgb_prev = cv::Mat::zeros(YY, XX, CV_8UC3);
 	movementMask   = cv::Mat::zeros(YY, XX, CV_8U);
 	edgeMask       = cv::Mat::zeros(YY, XX, CV_8U);
@@ -88,7 +88,7 @@ void frameImageProcessing::rgbImageDifferenceTh(const cv::Mat & i1,const  cv::Ma
 			p2 = i2.at<vec_uchar_3>(jj, ii);
 
 			// obliczenie roznych (modul)
-			float diff = abs(float(p1[0]) - float(p2[0])) + abs(float(p1[1]) - float(p2[1])) + abs(float(p1[2]) - float(p2[2]));
+			float diff = fabs(float(p1[0]) - float(p2[0])) + fabs(float(p1[1]) - float(p2[1])) + fabs(float(p1[2]) - float(p2[2]));
 
 			// progowanie
 			if (diff > threshold) {

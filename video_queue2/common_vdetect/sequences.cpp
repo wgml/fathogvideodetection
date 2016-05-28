@@ -126,9 +126,6 @@ sequences::sequences(const std::string fileName){
 
 }
 
-// ------------------------------------------------------------------------------------------
-// Destructor
-// ------------------------------------------------------------------------------------------
 sequences::~sequences() {
 
 	for (int i=0; i < m_iNumerOfSequences; i++) {
@@ -161,3 +158,120 @@ sequences::~sequences() {
 
 
 }
+
+using coord = std::pair<int, int>;
+sequence::sequence(int width, int height, std::vector<coord> coords, int numLanes, int numRois,
+				   int sepLanes, int sepRois, int movementTh, int edgeTh, cv::Mat image) {
+
+	iXX = width;
+	iYY = height;
+
+	iLanes = numLanes;
+	iqueueROIs = new int [iLanes];
+	sName = new std::string[iLanes];
+	for (int i = 0; i < numLanes; i++) {
+		iqueueROIs[i] = numRois;
+		sName[i] = std::string("xD");
+	}
+	queueROIs    = new queueROIPolygon*[iLanes];
+	analysisROIs = new queueROIPolygon[iLanes];
+	lineStartX = new int *[iLanes];
+	lineStartY = new int *[iLanes];
+	lineEndX = new int *[iLanes];
+	lineEndY = new int *[iLanes];
+	coord tl = coords[0];
+	coord tr = coords[1];
+	coord bl = coords[2];
+	coord br = coords[3];
+	const int dXTop = (tr.first - tl.first) / numLanes;
+	const int dYTop = (tr.second - tl.second) / numLanes;
+	const int dXBottom = (br.first - bl.first) / numLanes;
+	const int dYBottom = (br.second - bl.second) / numLanes;
+
+	for (int lane = 0; lane < numLanes; lane++) {
+		queueROIs[lane] = new queueROIPolygon[iqueueROIs[lane]];
+		lineStartX[lane] = new int[numRois];
+		lineStartY[lane] = new int[numRois];
+		lineEndX[lane] = new int[numRois];
+		lineEndY[lane] = new int[numRois];
+		coord lane_tl = std::make_pair(
+				tl.first + lane * dXTop,
+				tl.second + lane * dYTop
+		);
+		coord lane_tr = std::make_pair(
+				lane_tl.first + dXTop,
+				lane_tl.second + dYTop
+		);
+		coord lane_bl = std::make_pair(
+				bl.first + lane * dXBottom,
+				bl.second + lane * dYBottom
+		);
+		coord lane_br = std::make_pair(
+				lane_bl.first + dXBottom,
+				lane_bl.second + dYBottom
+		);
+
+		const int dXLeft = (lane_bl.first - lane_tl.first) / numRois;
+		const int dYLeft = (lane_bl.second - lane_tl.second) / numRois;
+		const int dXRight = (lane_br.first - lane_tr.first) / numRois;
+		const int dYRight = (lane_br.second - lane_tr.second) / numRois;
+
+		for (int roi = 0; roi < numRois; roi++) {
+			coord roi_tl = std::make_pair(
+					lane_tl.first + roi * dXLeft,
+					lane_tl.second + roi * dYLeft
+			);
+			coord roi_tr = std::make_pair(
+					lane_tr.first + roi * dXRight,
+					lane_tr.second + roi * dYRight
+			);
+			coord roi_bl = std::make_pair(
+					lane_tl.first + (roi + 1) * dXLeft,
+					lane_tl.second + (roi + 1) * dYLeft
+			);
+			coord roi_br = std::make_pair(
+					lane_tr.first + (roi + 1) * dXRight,
+					lane_tr.second + (roi + 1) * dYRight
+			);
+
+			queueROIs[lane][roi].TL.x = roi_tl.first;
+			queueROIs[lane][roi].TL.y = roi_tl.second;
+			queueROIs[lane][roi].TR.x = roi_tr.first;
+			queueROIs[lane][roi].TR.y = roi_tr.second;
+			queueROIs[lane][roi].BL.x = roi_bl.first;
+			queueROIs[lane][roi].BL.y = roi_bl.second;
+			queueROIs[lane][roi].BR.x = roi_br.first;
+			queueROIs[lane][roi].BR.y = roi_br.second;
+			queueROIs[lane][roi].movementTh = movementTh;
+			queueROIs[lane][roi].edgeTh = edgeTh;
+//			cv::circle(image, queueROIs[lane][roi].TL, 2, 0, 5);
+//			cv::circle(image, queueROIs[lane][roi].TR, 2, 0, 5);
+//			cv::circle(image, queueROIs[lane][roi].BL, 2, 0xFFFFFF, 10);
+//			cv::circle(image, queueROIs[lane][roi].BR, 2, 0xFFFFFF, 10);
+
+//			lineStartX[lane][roi] = std::min(tl.first, bl.first);
+//			lineStartY[lane][roi] = std::min(tl.second, tr.second);
+//			lineEndX[lane][roi] = std::max(br.first, tr.first);
+//			lineEndY[lane][roi] = std::min(bl.second, br.second);
+		}
+
+		analysisROIs[lane].TL.x = lane_tl.first;
+		analysisROIs[lane].TL.y = lane_tl.second;
+		analysisROIs[lane].TR.x = lane_tr.first;
+		analysisROIs[lane].TR.y = lane_tr.second;
+		analysisROIs[lane].BL.x = lane_bl.first;
+		analysisROIs[lane].BL.y = lane_bl.second;
+		analysisROIs[lane].BR.x = lane_br.first;
+		analysisROIs[lane].BR.y = lane_br.second;
+		analysisROIs[lane].movementTh = movementTh;
+		analysisROIs[lane].edgeTh = edgeTh;
+		cv::circle(image, analysisROIs[lane].TL, 2, 0, 5);
+		cv::circle(image, analysisROIs[lane].TR, 2, 0xffffff, 10);
+		cv::circle(image, analysisROIs[lane].BL, 2, 0, 5);
+		cv::circle(image, analysisROIs[lane].BR, 2, 0xffffff, 10);
+
+	}
+	//cv::imshow("a", image);
+	//while(cv::waitKey(10) != 0);
+}
+

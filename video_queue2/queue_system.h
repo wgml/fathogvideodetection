@@ -10,15 +10,19 @@
 #include "queue_single_lane.h"
 #include "globals.h"
 
+#include <utility>
+
 // System do obslugi  okreslania dlugosi kolejki
 // Obsluga calego obrazu
 
+using coord = std::pair<int, int>;
 class queueSystem {
 
 public:
 	queueSystem(int iLanes, int *iqueueROIs, int *gtQueue, std::string *names, queueROIPolygon **queueROIs, queueROIPolygon *analysisROIs);
 	~queueSystem();
 
+	void readjustSystem(coord tl, coord tr, coord bl, coord br);
 	void step(cv::Mat & image_grey, cv::Mat & image_rgb, cv::Mat & image_lbp, cv::Mat & movementMask, cv::Mat & edgeMask, cv::Mat & image_vis);
 	//void summary();
 
